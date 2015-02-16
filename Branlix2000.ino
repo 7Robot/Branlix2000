@@ -21,7 +21,7 @@ bool buttonR_old=0;
 
 
 // Speaker
-int speaker=3;
+int spk=3;
 
 // Servo declaration
 Servo servo;
@@ -50,32 +50,50 @@ void loop() {
 
 
 //////////////////////////////////////////////
+servo.write(arrowPos);
 
-	servo.write(arrowPos); 
+	// Left button rising edge
+	if (!digitalRead(buttonL) && buttonL_old==1){
+		arrowPos++;
+		digitalWrite(ledR, HIGH);
+		oldmillis1=millis();
+		tone(spk, 900, 50);
+	}
+	// Right button rising edge
+	if(!digitalRead(buttonR) && buttonR_old==1){
+		arrowPos--;
+		digitalWrite(ledG, HIGH);
+		oldmillis2=millis();
+		tone(spk, 700, 50);
+	}
 
-  // Left button rising edge
-  if (digitalRead(buttonL) && buttonL_old==0){
-	arrowPos++;
-	digitalWrite(ledR, HIGH);
-	oldmillis1=millis();
-  }
-  // Right button rising edge
-  if(digitalRead(buttonR) && buttonR_old==0){
-  	arrowPos--;
-  	digitalWrite(ledG, HIGH);
-	oldmillis2=millis();	
-  }
-
-// Tempo de clignotement des leds
-if(millis()-oldmillis1==50)
+	// Tempo de clignotement des leds
+	if(millis()-oldmillis1==50)
 	digitalWrite(ledR, LOW);
-if(millis()-oldmillis2==50)
+	if(millis()-oldmillis2==50)
 	digitalWrite(ledG, LOW);
 
-buttonL_old=digitalRead(buttonL);
-buttonR_old=digitalRead(buttonR);
-//////////////////////////////////////////////
+	// Buttons state reading
+	buttonL_old=digitalRead(buttonL);
+	buttonR_old=digitalRead(buttonR);
+	//////////////////////////////////////////////
 
-
+	if (arrowPos>111 || arrowPos<65){
+		win();
+	}
 
 }
+
+void win(){
+	delay(2000);
+	int i=20;
+	while (digitalRead(buttonL)!=0 || digitalRead(buttonR)!=0)
+	{
+		for(; i<5000; i++)
+		tone(spk, i, 50);
+		i=20;
+	}
+	arrowPos=87;
+	delay(1000);
+}
+
