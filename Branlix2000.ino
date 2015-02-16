@@ -12,9 +12,12 @@ int buttonL=10;
 // Right button
 int buttonR=4;
 
+long unsigned int oldmillis1=0;
+long unsigned int oldmillis2=0;
+
 // Old button states for rising edge detection
-buttonL_old=0;
-buttonR_old=0;
+bool buttonL_old=0;
+bool buttonR_old=0;
 
 
 // Speaker
@@ -37,20 +40,42 @@ void setup() {
 	digitalWrite(ledW, HIGH);
 	digitalWrite(ledG, HIGH);
 	digitalWrite(ledR, HIGH);
+
+	// Buttons pin declarations
+	pinMode(buttonL,INPUT);
+	pinMode(buttonR,INPUT);
 }
 
 void loop() {
 
+
+//////////////////////////////////////////////
+
 	servo.write(arrowPos); 
 
-	/*
   // Left button rising edge
-  if (buttonL && buttonL_old==0){
-
+  if (digitalRead(buttonL) && buttonL_old==0){
+	arrowPos++;
+	digitalWrite(ledR, HIGH);
+	oldmillis1=millis();
   }
   // Right button rising edge
-  if(buttonR && buttonR_old==0){
-
+  if(digitalRead(buttonR) && buttonR_old==0){
+  	arrowPos--;
+  	digitalWrite(ledG, HIGH);
+	oldmillis2=millis();	
   }
-    */
+
+// Tempo de clignotement des leds
+if(millis()-oldmillis1==50)
+	digitalWrite(ledR, LOW);
+if(millis()-oldmillis2==50)
+	digitalWrite(ledG, LOW);
+
+buttonL_old=digitalRead(buttonL);
+buttonR_old=digitalRead(buttonR);
+//////////////////////////////////////////////
+
+
+
 }
