@@ -95,5 +95,7 @@ void win(){
 	}
 	arrowPos=87;
 	delay(1000);
+	digitalWrite(ledG, LOW);
+	digitalWrite(ledR, LOW);
 }
 
